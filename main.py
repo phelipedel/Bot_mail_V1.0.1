@@ -8,25 +8,55 @@ email = '' #email
 senha = input(str('Validacao de senha: ')) #senha
 enviarpara = ('', '') #emails
 assunto = 'Teste de envio de email automatico ' #assunto
-mensagem = "Teste de mensagem "    #vericicar falha msg e no assunto 
+mensage_html = '''     
+<html>
+  <head></head>
+  <body>
+    <p>Olá!<br>
+       Como você está?<br>
+       Aqui vai um <a href="https://www.youtube.com/">link</a> que talvez você goste.
+    </p>
+  </body>
+</html>
+'''
 
-#nova instancia de MIMEMultipart
+
+# nova instancia de MIMEMultipart
 msg = MIMEMultipart()
-msg['Email'] = email
-msg['Para'] = enviarpara
-msg['Assunto'] = assunto
+msg['From'] = email
+msg['To'] = enviarpara
+msg['Subject'] = assunto
+msg.attach(MIMEText(message, 'html'))
 
-msg.attach(MIMEText(mensagem, 'plain'))
+"""
+# adicionando arquivos dentro do email
+filename = ''  # nome do arquivo
+filepath = ''  # caminho do arquivo
+attachment = open(filepath, 'rb')
 
-#conecao ao sever
-server = smtplib.SMTP('smtp.office365.com', port= 587)  #host e porta do hotmail
-#porta hotmaill variando possivel ecesso de envio automatico !?
+# criando o MIMEBase, sponsável por fazer a conversão correta do arquivo (base64)
+att = MIMEBase('aplication', 'octet-stream')
+att.set_payload(attachment.read())
+encoders.encode_base64(att)
+
+# para adicionar o arquivo ao email
+att.add_header('Content-Disposition', f'attachment; filename= {filename}')
+attachment.close()
+msg.attach(att)
+"""
+
+
+# conecao ao sever
+print(f'{cor.amarelo}Criando objeto servidor...')
+server = smtplib.SMTP('smtp.office365.com', port=587)  # host e porta do hotmail
+print(f'{cor.amarelo}Preparando para o envio...')
 server.starttls()
-server.login(email,senha)
-server.sendmail(msg['Email'], msg['Para'], msg.as_string())
+server.login(email, senha)
+server.sendmail(msg['From'], msg['To'], msg.as_string())
 
 server.quit()
 print(f'{cor.azul}Email enviado com sucesso')
+
 
 
 
