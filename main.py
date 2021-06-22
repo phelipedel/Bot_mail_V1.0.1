@@ -23,7 +23,7 @@ server = smtplib.SMTP('smtp.office365.com', port= 587)  #host e porta do hotmail
 #porta hotmaill variando possivel ecesso de envio automatico !?
 server.starttls()
 server.login(email,senha)
-server.sendmail(msg['Email'], msg['Para'],mensagem)
+server.sendmail(msg['Email'], msg['Para'], msg.as_string())
 
 server.quit()
 print(f'{cor.azul}Email enviado com sucesso')
